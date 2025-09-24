@@ -7,6 +7,8 @@ const baseDownloadURL = "https://github.com/digitalocean/doctl/releases/download
 const fallbackVersion = "1.98.1";
 const octokit = new Octokit();
 
+//https://github.com/digitalocean/doctl/releases/download/v1.142.0/doctl-1.142.0-linux-arm64.tar.gz
+
 async function getRecentReleases(count = 5) {
     try {
         const response = await octokit.repos.listReleases({
@@ -25,6 +27,8 @@ async function downloadDoctl(version, type, architecture) {
     var platform = 'linux';
     var arch = 'amd64';
     var extension = 'tar.gz';
+    var prefixedVersion = !version.startsWith('v') ? `v${version}` : version;
+    var cleanVersion = prefixedVersion.replace('v', '');
 
     switch (type) {
         case 'darwin':
@@ -57,7 +61,7 @@ async function downloadDoctl(version, type, architecture) {
             break;
     }
 
-    const downloadURL = `${baseDownloadURL}/v${version}/doctl-${version}-${platform}-${arch}.${extension}`;
+    const downloadURL = `${baseDownloadURL}/${prefixedVersion}/doctl-${cleanVersion}-${platform}-${arch}.${extension}`;
     core.debug(`doctl download url: ${downloadURL}`);
     
     try {
